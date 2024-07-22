@@ -21,20 +21,54 @@
 #define Front_L_pin 3
 #define Back_R_pin 4
 #define Back_L_pin 5
+#define PWM_FREQ 300
+
+struct levelcalc{
+    uint16_t wrap;
+    int mod = 1;
+    void setWrap(uint16_t wrap){
+        wrap = this->wrap;
+    }
+    uint16_t getLevel(){
+        uint16_t res;
+        
+        return res;
+    }
+
+};
 
 
 int main() {
-
-    uart_init(UART_ID, BAUD_RATE);
-
-    gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
-    gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
     
     gpio_set_function(Front_R_pin, GPIO_FUNC_PWM);
     gpio_set_function(Front_L_pin, GPIO_FUNC_PWM);
     gpio_set_function(Back_R_pin, GPIO_FUNC_PWM);
     gpio_set_function(Back_L_pin, GPIO_FUNC_PWM);
 
+    uint sliceFR = pwm_gpio_to_slice_num(Front_R_pin);
+    uint sliceFL = pwm_gpio_to_slice_num(Front_L_pin);
+    uint sliceBR = pwm_gpio_to_slice_num(Back_R_pin);
+    uint sliceBL = pwm_gpio_to_slice_num(Back_L_pin);
+
+    uint chanFR = pwm_gpio_to_channel(Front_R_pin);
+    
+    uint16_t main_wrap = UINT16_MAX/PWM_FREQ;
+    
+    pwm_set_wrap(sliceFR, main_wrap);
+    pwm_set_wrap(sliceFL, main_wrap);
+    pwm_set_wrap(sliceBR, main_wrap);
+    pwm_set_wrap(sliceBL, main_wrap);
+
+
+
     uart_puts(UART_ID, "uart ready");
+
+
+
+    bool kill = false;
+    while(!kill){
+
+    }
+
 
 }
