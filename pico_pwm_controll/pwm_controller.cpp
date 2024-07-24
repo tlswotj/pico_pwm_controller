@@ -29,13 +29,20 @@ struct levelcalc{
     void setWrap(uint16_t wrap){
         wrap = this->wrap;
     }
-    uint16_t getLevel(){
-        uint16_t res;
-        
+    uint16_t getLevel(int input){
+        uint16_t res = wrap/2;
+        res = res + (input*res)/100;        
         return res;
     }
 
 };
+
+void kill_all_pwms(){
+    pwm_set_gpio_level(Front_L_pin, 0);
+    pwm_set_gpio_level(Front_R_pin, 0);
+    pwm_set_gpio_level(Back_L_pin, 0);
+    pwm_set_gpio_level(Back_R_pin, 0);
+}
 
 
 int main() {
@@ -63,12 +70,13 @@ int main() {
 
     uart_puts(UART_ID, "uart ready");
 
-
+    kill_all_pwms();
 
     bool kill = false;
     while(!kill){
-
+        
     }
 
+    kill_all_pwms();
 
 }
