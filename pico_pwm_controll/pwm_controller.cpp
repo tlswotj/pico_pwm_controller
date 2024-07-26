@@ -5,17 +5,9 @@
  */
 
 // Output PWM signals on pins 0 and 1
+#include <iostream>
 #include "pico/stdlib.h"
 #include "hardware/pwm.h"
-#include "hardware/uart.h"
-
-
-#define UART_ID uart0
-#define BAUD_RATE 115200
-
-
-#define UART_TX_PIN 0
-#define UART_RX_PIN 1
 
 #define Front_R_pin 2
 #define Front_L_pin 3
@@ -45,8 +37,28 @@ void kill_all_pwms(){
 }
 
 
+float calc_clkdv(uint32_t freq, uint16_t &wrap){
+    float res;
+    if(freq>1907){
+        res=1;
+        wrap = UINT16_MAX/freq;
+    }
+    else{
+        wrap = UINT16_MAX-1;
+        res = 1907.35/freq;
+    }
+    return res;
+}
+
+
 int main() {
-    
+    stdio_init_all();
+    uint16_t main_wrap = UINT16_MAX/PWM_FREQ;
+    float clkdv_main = calc_clkdv(PWM_FREQ, main_wrap);
+
+
+
+
     gpio_set_function(Front_R_pin, GPIO_FUNC_PWM);
     gpio_set_function(Front_L_pin, GPIO_FUNC_PWM);
     gpio_set_function(Back_R_pin, GPIO_FUNC_PWM);
@@ -57,9 +69,9 @@ int main() {
     uint sliceBR = pwm_gpio_to_slice_num(Back_R_pin);
     uint sliceBL = pwm_gpio_to_slice_num(Back_L_pin);
 
-    uint chanFR = pwm_gpio_to_channel(Front_R_pin);
+    //uint chanFR = pwm_gpio_to_channel(Front_R_pin);
     
-    uint16_t main_wrap = UINT16_MAX/PWM_FREQ;
+    
     
     pwm_set_wrap(sliceFR, main_wrap);
     pwm_set_wrap(sliceFL, main_wrap);
@@ -67,13 +79,11 @@ int main() {
     pwm_set_wrap(sliceBL, main_wrap);
 
 
-
-    uart_puts(UART_ID, "uart ready");
-
     kill_all_pwms();
 
     bool kill = false;
     while(!kill){
+        std::cout<<"cout test"<<std::endl;
         
     }
 
