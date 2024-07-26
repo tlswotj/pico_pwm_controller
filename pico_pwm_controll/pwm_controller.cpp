@@ -16,10 +16,10 @@
 #define PWM_FREQ 300
 
 struct levelcalc{
-    uint16_t wrap;
+    uint16_t wrap =0;
     int mod = 1;
     void setWrap(uint16_t wrap){
-        wrap = this->wrap;
+        this->wrap = wrap;
     }
     uint16_t getLevel(int input){
         uint16_t res = wrap/2;
@@ -41,11 +41,35 @@ float calc_clkdv(uint32_t freq, uint16_t &wrap){
     float res;
     if(freq>1907){
         res=1;
-        wrap = UINT16_MAX/freq;
+        wrap = 125000000/freq; // freq:1907 = wrap : uintmax, 1907 = wrap*freq*uintmax, wrap = 1907/freq*UINTMAX   freq = 125000000/wrap
+    }
+    else if(freq>953){
+        res = 2;
+        wrap = 62500000/freq;
+    }
+    else if(freq>636){
+        res = 3;
+        wrap = 41666667/freq;
+    }
+    else if(freq>477){
+        res = 4;
+        wrap = 31250000/freq;
+    }
+    else if(freq>381){
+        res = 5;
+        wrap = 25000000/freq;
+    }
+    else if(freq>238){
+        res = 8;
+        wrap = 15625000/freq;
+    }
+    else if(freq>190){
+        res = 10;
+        wrap = 12500000/freq;
     }
     else{
-        wrap = UINT16_MAX-1;
-        res = 1907.35/freq;
+        wrap = UINT16_MAX;
+        res = 1907.38/freq;
     }
     return res;
 }
