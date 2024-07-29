@@ -60,9 +60,17 @@ struct levelcalc{
 
 int char_to_uint(char *point, int num, int startidx =0){
     int res=0;
+    bool m = false;
+    if(point[startidx]=='-'){
+        startidx++;
+        m = true;
+    }
     for ( int i=startidx; i<num; i++){
         res = res*10;
         res = res+ (point[i]-48);
+    }
+    if(m){
+        res*(-1);
     }
     
     return res;
